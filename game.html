@@ -1,0 +1,160 @@
+<html>
+<head>
+<title>game</title>
+<body></body>
+</head>
+<script src="./pixi.min.js"></script>
+<script>
+var app = new PIXI.Application(620, 620, { backgroundColor: 0xffffff });
+document.body.appendChild(app.view);
+
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
+initGameBorad(app);
+initGameArea(app);
+
+var borad = new Array(new Array(0,0,0),new Array(0,0,0),new Array(0,0,0));
+//cricular 1 cross 0
+var status = 0;
+var start = false;
+var prvX = 0;
+var prvY = 0;
+
+//onClick
+function check(x,y)
+{
+    console.log(x+"*"+y);
+    console.log(prvX+"*"+prvY);
+    gameinit = (status == 1) ? 
+        PIXI.Sprite.fromImage('required/assets/basics/cricularCurr.png')
+        : PIXI.Sprite.fromImage('required/assets/basics/crossCurr.png');
+    gameinit.anchor.set(0.5);
+    gameinit.interactive = true;
+    gameinit.buttonMode = false;
+    gameinit.x = (x * 205) + 100;
+    gameinit.y = (y * 205) + 100;
+    app.stage.addChild(gameinit);
+    
+    borad[x][y] = (status == 1) ? 1 : 2;
+    status = status ^ 1;
+
+    if(start){
+        gameinit = (status == 1) ? 
+            PIXI.Sprite.fromImage('required/assets/basics/cricular.png')
+            : PIXI.Sprite.fromImage('required/assets/basics/cross.png');
+        gameinit.anchor.set(0.5);
+        gameinit.interactive = true;
+        gameinit.buttonMode = false;
+        gameinit.x = (prvX * 205) + 100;
+        gameinit.y = (prvY * 205) + 100;
+        app.stage.addChild(gameinit);
+    }
+
+    start = true;
+    prvX = x;
+    prvY = y;
+}
+
+function loadImg(app,url,x,y,interactive,buttonMode,zOrder)
+{
+    var img = PIXI.Sprite.fromImage(url);
+    img.anchor.set(0.5);
+    img.x = x;
+    img.y = y;
+    img.interactive = interactive;
+    img.buttonMode = buttonMode;
+    img.zOrder = zOrder;
+    app.stage.addChild(img);
+}
+
+//init game borad
+function initGameBorad(app){
+    loadImg(app,'required/assets/basics/board.png',app.renderer.width/2,
+           app.renderer.height/2,true,false,-1);
+}
+//init game area
+function initGameArea(app){
+    gameinit = PIXI.Sprite.fromImage('required/assets/basics/init.png');
+    gameinit.anchor.set(0.5);
+    gameinit.interactive = true;
+    gameinit.buttonMode = true;
+    gameinit.x = (0 * 205) + 100;
+    gameinit.y = (0 * 205) + 100;
+    gameinit.on('pointerdown',onClick00);
+    function onClick00(){check(0,0);}
+    app.stage.addChild(gameinit);
+    gameinit = PIXI.Sprite.fromImage('required/assets/basics/init.png');
+    gameinit.anchor.set(0.5);
+    gameinit.interactive = true;
+    gameinit.buttonMode = true;
+    gameinit.x = (0 * 205) + 100;
+    gameinit.y = (1 * 205) + 100;
+    gameinit.on('pointerdown',onClick01);
+    function onClick01(){check(0,1);}
+    app.stage.addChild(gameinit);
+    gameinit = PIXI.Sprite.fromImage('required/assets/basics/init.png');
+    gameinit.anchor.set(0.5);
+    gameinit.interactive = true;
+    gameinit.buttonMode = true;
+    gameinit.x = (0 * 205) + 100;
+    gameinit.y = (2 * 205) + 100;
+    gameinit.on('pointerdown',onClick02);
+    function onClick02(){check(0,2);}
+    app.stage.addChild(gameinit);
+    gameinit = PIXI.Sprite.fromImage('required/assets/basics/init.png');
+    gameinit.anchor.set(0.5);
+    gameinit.interactive = true;
+    gameinit.buttonMode = true;
+    gameinit.x = (1 * 205) + 100;
+    gameinit.y = (0 * 205) + 100;
+    gameinit.on('pointerdown',onClick10);
+    function onClick10(){check(1,0);}
+    app.stage.addChild(gameinit);
+    gameinit = PIXI.Sprite.fromImage('required/assets/basics/init.png');
+    gameinit.anchor.set(0.5);
+    gameinit.interactive = true;
+    gameinit.buttonMode = true;
+    gameinit.x = (1 * 205) + 100;
+    gameinit.y = (1 * 205) + 100;
+    gameinit.on('pointerdown',onClick11);
+    function onClick11(){check(1,1);}
+    app.stage.addChild(gameinit);
+    gameinit = PIXI.Sprite.fromImage('required/assets/basics/init.png');
+    gameinit.anchor.set(0.5);
+    gameinit.interactive = true;
+    gameinit.buttonMode = true;
+    gameinit.x = (1 * 205) + 100;
+    gameinit.y = (2 * 205) + 100;
+    gameinit.on('pointerdown',onClick12);
+    function onClick12(){check(1,2);}
+    app.stage.addChild(gameinit);
+    gameinit = PIXI.Sprite.fromImage('required/assets/basics/init.png');
+    gameinit.anchor.set(0.5);
+    gameinit.interactive = true;
+    gameinit.buttonMode = true;
+    gameinit.x = (2 * 205) + 100;
+    gameinit.y = (0 * 205) + 100;
+    gameinit.on('pointerdown',onClick20);
+    function onClick20(){check(2,0);}
+    app.stage.addChild(gameinit);
+    gameinit = PIXI.Sprite.fromImage('required/assets/basics/init.png');
+    gameinit.anchor.set(0.5);
+    gameinit.interactive = true;
+    gameinit.buttonMode = true;
+    gameinit.x = (2 * 205) + 100;
+    gameinit.y = (1 * 205) + 100;
+    gameinit.on('pointerdown',onClick21);
+    function onClick21(){check(2,1);}
+    app.stage.addChild(gameinit);
+    gameinit = PIXI.Sprite.fromImage('required/assets/basics/init.png');
+    gameinit.anchor.set(0.5);
+    gameinit.interactive = true;
+    gameinit.buttonMode = true;
+    gameinit.x = (2 * 205) + 100;
+    gameinit.y = (2 * 205) + 100;
+    gameinit.on('pointerdown',onClick22);
+    function onClick22(){check(2,2);}
+    app.stage.addChild(gameinit);
+}
+</script>
+</html>
