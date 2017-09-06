@@ -14,45 +14,83 @@ initGameBorad(app);
 initGameArea(app);
 
 var borad = new Array(new Array(0,0,0),new Array(0,0,0),new Array(0,0,0));
-//cricular 1 cross 0
+var value = new Array(new Array(3,2,3),new Array(2,4,2),new Array(3,2,3));
+//cricular 1 cross 2
 var status = 0;
 var start = false;
 var prvX = 0;
 var prvY = 0;
 
+function checkWhoWins()
+{
+    //col
+    for(i=0;i<3;i++){
+        if(borad[i][0] == 0)continue;
+        if(borad[i][0] == borad[i][1] && borad[i][1] == borad[i][2])return borad[i][0];
+    }
+    //row
+    for(i=0;i<3;i++){
+        if(borad[0][i] == 0)continue;
+        if(borad[0][i] == borad[1][i] && borad[1][i] == borad[2][i])return borad[0][1];
+    }
+    //cross
+    if(borad[0][0] != 0 && borad[0][0] == borad[1][1] && borad[1][1] == borad[2][2])return borad[0][0];
+    if(borad[0][2] != 0 && borad[0][2] == borad[1][1] && borad[1][1] == borad[2][0])return borad[0][2];
+
+    //
+    for(i=0;i<3;i++){
+        for(j=0;j<3;j++){
+            if(borad[i][j] == 0) return 0;
+        }
+    }
+    //draw game
+    return -1;
+}
+
 //onClick
 function check(x,y)
 {
     console.log(x+"*"+y);
-    console.log(prvX+"*"+prvY);
-    gameinit = (status == 1) ? 
-        PIXI.Sprite.fromImage('required/assets/basics/cricularCurr.png')
-        : PIXI.Sprite.fromImage('required/assets/basics/crossCurr.png');
-    gameinit.anchor.set(0.5);
-    gameinit.interactive = true;
-    gameinit.buttonMode = false;
-    gameinit.x = (x * 205) + 100;
-    gameinit.y = (y * 205) + 100;
-    app.stage.addChild(gameinit);
+
+    drawPlay(x,y);
+    
+    result = checkWhoWins();
+    if(result != 0){
+        start = false;
+        winNotice(result);
+    }
+}
+
+function calcValue()
+{
+   console.log(value); 
+}
+
+function drawPlay(x,y)
+{
+    url = (status == 1) ? 
+        'required/assets/basics/cricularCurr.png'
+        : 'required/assets/basics/crossCurr.png';
+    loadImg(app,url,(x*205)+100,(y*205)+100,true,false,0);
     
     borad[x][y] = (status == 1) ? 1 : 2;
     status = status ^ 1;
 
     if(start){
-        gameinit = (status == 1) ? 
-            PIXI.Sprite.fromImage('required/assets/basics/cricular.png')
-            : PIXI.Sprite.fromImage('required/assets/basics/cross.png');
-        gameinit.anchor.set(0.5);
-        gameinit.interactive = true;
-        gameinit.buttonMode = false;
-        gameinit.x = (prvX * 205) + 100;
-        gameinit.y = (prvY * 205) + 100;
-        app.stage.addChild(gameinit);
+        url = (status == 1) ? 
+            'required/assets/basics/cricular.png'
+            : 'required/assets/basics/cross.png';
+        loadImg(app,url,(prvX*205)+100,(prvY*205)+100,true,false,0);
     }
 
     start = true;
     prvX = x;
     prvY = y;
+}
+
+function winNotice(result)
+{
+    alert((result == -1 ? "The game ended with stalemate" : ((result == 1 ? "cricular" : "cross") + " win")));
 }
 
 function loadImg(app,url,x,y,interactive,buttonMode,zOrder)
