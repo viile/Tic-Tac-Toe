@@ -21,6 +21,117 @@ var start = false;
 var prvX = 0;
 var prvY = 0;
 
+function isXNotFail()
+{
+    return isPlayerNotFail(2);
+}
+function isONotFail()
+{
+    return isPlayerNotFail(1);
+}
+
+function isPlayerNotFail(p)
+{
+    op = (p == 1) ? 2 : 1;
+    if(isGameOver())
+        return !(checkWhoWins() == op);
+    if(isCurPlayer(op)){
+        for(i=0;i<3;i++){
+            for(j=0;j<3;j++){
+                if(borad[i][j] == 0){
+                    borad[i][j] = p;
+                    if(isXNotFail()){
+                        borad[i][j] = 0;
+                        return true;
+                    }
+                    borad[i][j] = 0;
+                };
+            }
+        }
+        return false; 
+    }
+    if(isCurPlayer(p)){
+        for(i=0;i<3;i++){
+            for(j=0;j<3;j++){
+                if(borad[i][j] == 0){
+                    borad[i][j] = op;
+                    if(!isXNotFail()){
+                        borad[i][j] = 0;
+                        return false;
+                    }
+                    borad[i][j] = 0;
+                };
+            }
+        }
+        return true; 
+    }
+}
+
+
+function isXCurPlayer()
+{
+    return status == 0;
+}
+
+function isOCurPlayer()
+{
+    return status == 1;
+}
+
+function isGameOver()
+{
+    if(start == false)
+        return true;
+    for(i=0;i<3;i++){
+        for(j=0;j<3;j++){
+            if(borad[i][j] == 0) return false;
+        }
+    }
+    return true;
+}
+
+function play(x,y,p)
+{
+    borad[x][y] = p;
+    prvX = x;
+    prvY = y;
+}
+function getNodeValue(p)
+{
+    op = p ^ 1;
+    if(isGameOver()){
+        result = checkWhoWins();
+        if(result == 0)return 0;
+        return (p == result) ? 1 : -1;
+    }
+    v = new Array();
+    if(isCurPlayer(p)){
+        for(i=0;i<3;i++){
+            for(j=0;j<3;j++){
+                if(borad[i][j] == 0){
+                    play(i,j,x);
+                    val = getNodeValue(p);
+                    v.push(val);
+                    play(i,j,0);
+                }
+            }
+        }
+        for(xx in v){
+            if(xx == 1)return 1;
+        }
+        for(xx in v){
+            return i == 0 ? 0 : -1;
+        }
+    }
+}
+
+function isCurPlayer(p)
+{
+    if (start == false)
+        return 0;
+    return borad[prvX][prvY] == p;
+}
+
 function checkWhoWins()
 {
     //col
@@ -34,6 +145,7 @@ function checkWhoWins()
         if(borad[0][i] == borad[1][i] && borad[1][i] == borad[2][i])return borad[0][1];
     }
     //cross
+    if(borad[1][1] == 0)return 0;
     if(borad[0][0] != 0 && borad[0][0] == borad[1][1] && borad[1][1] == borad[2][2])return borad[0][0];
     if(borad[0][2] != 0 && borad[0][2] == borad[1][1] && borad[1][1] == borad[2][0])return borad[0][2];
 
@@ -50,7 +162,7 @@ function checkWhoWins()
 //onClick
 function check(x,y)
 {
-    console.log(x+"*"+y);
+    //console.log(x+"*"+y);
 
     drawPlay(x,y);
     
@@ -59,6 +171,34 @@ function check(x,y)
         start = false;
         winNotice(result);
     }
+
+    if(status == 1){
+        res = getAI_MoveO();
+        if(res[0] == -1){
+            alert(" cricular lose");
+            start = false;
+        }
+        check(res[0],res[1]);
+    }
+}
+
+function getAI_MoveO()
+{
+    for(i=0;i<3;i++){
+        for(j=0;j<3;j++){
+            if(borad[i][j] == 0){
+                borad[i][j] = 1;
+                if(isONotFail()){
+                    borad[i][j] = 0;
+                    console.log(i+"*"+j);
+                    return new Array(i,j);
+                }
+                borad[i][j] = 0;
+            }
+        }
+    }
+    return new Array(-1,-1);
+
 }
 
 function calcValue()
